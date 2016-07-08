@@ -1,9 +1,9 @@
- ---                                                                                                                                                                                          layout: post
- title:  "Deep Learning Reading List"
- date:   2016-07-08 11:53:23 -0300
- categories: jekyll update
- ---
-
+---
+layout: post
+title:  "Deep Learning Reading List"
+date:   2016-07-08 11:53:23 -0300
+categories: jekyll update
+---
 There is a lot written online about deep learning and AI. Ignoring the fluff and product-hype articles, you’re left with a huge resource for learning the technical side of the field. I won’t claim to have read everything out there, but here are some of the most useful things that I have found. The purpose of this list is not to be a definitive curriculum, but to recommend some of the high-quality educational material that’s out there. 
 
 Education sharing in specialist fields is really cool and we should consider ourselves lucky to have it. My career so far has been based on the fact that anyone with math literacy can self-educate their way through tech.
