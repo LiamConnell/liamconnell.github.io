@@ -162,11 +162,11 @@ Stay tuned for some articles that I will write about the algorithms used here an
 
 [early_stopping]: https://en.wikipedia.org/wiki/Regularization_(mathematics)#Early_stopping
 [wiki_reg]: https://en.wikipedia.org/wiki/Regularization_(mathematics)
-[1]: https://github.com/LiamConnell/deep-algotrading/notebooks/TF-FIN-1-singlestock_regresion.ipynb
-[2]: https://github.com/LiamConnell/deep-algotrading/notebooks/TF-FIN-2-multistock_regresion.ipynb
-[3]: https://github.com/LiamConnell/deep-algotrading/notebooks/TF-FIN-3-regression_with_policy_training.ipynb
-[4]: https://github.com/LiamConnell/deep-algotrading/notebooks/TF-FIN-4-stochastic_gradient_descent.ipynb
-[5]: https://github.com/LiamConnell/deep-algotrading/notebooks/TF-FIN-5-multi_sampling.ipynb
-[6]: https://github.com/LiamConnell/deep-algotrading/notebooks/TF-FIN-6-neural_network.ipynb
-[7]: https://github.com/LiamConnell/deep-algotrading/notebooks/TF-FIN-7-regularization_modular.ipynb
-[8]: https://github.com/LiamConnell/deep-algotrading/notebooks/lstm_(7).ipynb#
+[1]: https://github.com/LiamConnell/deep-algotrading/tree/master/notebooks/TF-FIN-1-singlestock_regresion.ipynb
+[2]: https://github.com/LiamConnell/deep-algotrading/tree/master/notebooks/TF-FIN-2-multistock_regresion.ipynb
+[3]: https://github.com/LiamConnell/deep-algotrading/tree/master/notebooks/TF-FIN-3-regression_with_policy_training.ipynb
+[4]: https://github.com/LiamConnell/deep-algotrading/tree/master/notebooks/TF-FIN-4-stochastic_gradient_descent.ipynb
+[5]: https://github.com/LiamConnell/deep-algotrading/tree/master/notebooks/TF-FIN-5-multi_sampling.ipynb
+[6]: https://github.com/LiamConnell/deep-algotrading/tree/master/notebooks/TF-FIN-6-neural_network.ipynb
+[7]: https://github.com/LiamConnell/deep-algotrading/tree/master/notebooks/TF-FIN-7-regularization_modular.ipynb
+[8]: https://github.com/LiamConnell/deep-algotrading/tree/master/notebooks/lstm_(7).ipynb#
