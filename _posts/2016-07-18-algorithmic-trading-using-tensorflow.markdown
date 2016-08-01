@@ -1,3 +1,10 @@
+---
+layout: post
+title:  "A tour through tensorflow with financial data"
+date:   2016-07-18 11:53:23 -0300
+categories: jekyll update
+---
+
 #A tour through tensorflow with financial data
 
 I present several models ranging in complexity from simple regression to LSTM and policy networks. The series can be used as an educational resource for tensorflow or deep learning, a reference aid, or a source of ideas on how to apply deep learning techniques to problems that are outside of the usual deep learning fields (vision, natural language).
