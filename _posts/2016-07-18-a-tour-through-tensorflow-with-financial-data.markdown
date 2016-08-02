@@ -11,10 +11,10 @@ Not all of the examples will work. Some of them are far to simple to even be con
 
 The algorithms increase in complexity and introduce new concepts as they progress:
 
-##Simple Regression [(notebook)][1]
+### Simple Regression [(notebook)][1]
 Here we regress the prices from the last 100 days to the next day's price, training *W* and *b* in the equation *y = Wx + b* where *y* is the next day's price, *x* is a vector of dimension 100, *W* is a 100x1 matrix and *b* is a 1x1 matrix. We run the gradient descent algorithm to minimize the mean squared error of the predicted price and the actual next day price. Congratulations, you passed highschool stats. But hopefully this simple and naive example helps demonstrate the idea of a tensor graph, as well as showing a great example of extreme overfitting. 
 
-##Simple Regression on Multiple Symbols [(notebook)][2] 
+### Simple Regression on Multiple Symbols [(notebook)][2] 
 Things get a little more interesting as soon as we introduce more than one symbol. What is the best way to model our eventual investment strategy? We start to realize that our model only vaguely implies a policy (investment actions) by predicting the actual movement in price. The implied policy is simple: buy if the the predicted price movement is positive, sell if it is negative. But that doesnt sound realistic at all. How much do we buy? And will optimizing this, even if we are very careful to avoid overfitting, even produce results that allign with our goals? We havent actaully defined our goals explicitly, but for those who are not familiar with investment metrics, common goals include:
 + maximize risk adjusted return (like the [Sharpe](https://en.wikipedia.org/wiki/Sharpe_ratio) ratio)
 + consistency of returns over time
@@ -23,7 +23,7 @@ Things get a little more interesting as soon as we introduce more than one symbo
 
 If markets were easy to figure out and we could accurately predict the next day's return then it wouldn't matter. Our implied policy would fit with some goals (not long/short equity though) and the strategy would be viable. The reality is that our model cannot accurately predict this, nor will our strategy ever be perfect. Our best case scenario is always just winning slightly more than losing. When operating on these margins it is much more important that we consider the policy explicitly, thus moving to 'Policy Based' deep learning. 
 
-##Policy Gradient Training [(notebook)][3]
+### Policy Gradient Training [(notebook)][3]
 Our policy will remain simple. We will chose a position, long/neutral/short, for each symbol in our portfolio. But now, instead of letting our estimation of the future return inform our decision, we train our network to choose the best position. Thus, instead of having an *implied* policy, it is *explicit* and *trained* directly. 
  Even thought the policy is simple in this case, training it is a bit more involved. I did my best to interpret Andrej Karpathy's excelent article on [Reinforcement Learning](http://karpathy.github.io/2016/05/31/rl/) when writing this code. It might be worth reading his explanation, but I'll do my best to summarize what I did.
  
@@ -106,13 +106,13 @@ optimizer = tf.train.GradientDescentOptimizer(0.1).minimize(cost)
 ```
 
 
-##Stochastic Gradient Descent [(notebook)][4] 
+### Stochastic Gradient Descent [(notebook)][4] 
 
 As you saw in the notebook, the policy gradient doesnt train very well when we are grading it on the return over the entire dataset, but it trains very well when it uses each day's return or the position on each symbol every day. This makes sense, if we just take the total return over several years and its slightly positive then we tell our machine to do more of that. That will do almost nothing since so many of those decisions were actually losing money. The problem, as we have it set up now, needs to be broken down into smaller units. Fortunately there is some mathematical proof that this is legal and even faster. Score! 
 
 Stochastic Gradient Descent is basically just breaking your data into smaller batches and doing gradient descent on each one. It will have slightly less accurate gradients WRT to the entire dataset's cost function, but since you are able to iterate faster with smaller batches you can run way more of them. There might even be more advantages to SGD that I'm not even mentioning, so you can read the [wikipedia](https://en.wikipedia.org/wiki/Stochastic_gradient_descent) or hear [Andrew Ng](https://www.coursera.org/learn/machine-learning#syllabus) talk about it. Or just use it since it works and its faster. If you're going on a wikipedia learning binge you might as well also learn about [Momentum](https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Momentum) and [Adagrad](https://en.wikipedia.org/wiki/Stochastic_gradient_descent#AdaGrad) which are just variations. The latter two only really useful for people doing much bigger projects. If you are working on a huge project and your twobucksanhour AWS GPU instance is too slow then you should definitely be using them (and not be reading this introductory tutorial). At the higher level, the problem of tuning the optimizer and overall efficiency have been thoroughly [researched](http://www.andrewng.org/portfolio/on-optimization-methods-for-deep-learning/). 
 
-##Multi Sampling [(notebook)][5]
+### Multi Sampling [(notebook)][5]
 
 Since we are sampling the policy, we can sample repeatedly in order to compute better. Karpathy's article summarizes the math behind this nicely and [this](http://arxiv.org/abs/1506.05254) paper is worth reading. The concept is intuitive and simple, but getting the math to work out and the tensor graph in order is very involved. One realizes that a mastery of numpy and a solid understanding of linear algebra are very important to tensorflow once the problems get...deeper, I guess is the word.
 
@@ -120,7 +120,7 @@ Multi sampling adds a useful computational kick that lets the network train much
 
 By now you are probably either wondering *does this guy even know what deep learning is? I havent seen a single neural network!* or you completely forgot we were still using the same linear regression that 16 year olds learn in math class. Well, we'll get to neural networks next but I wanted to talk about other things before neural networks to show how much tensorflow can be used for before neural networks even get mentioned, and to show how much important math exists in deep learning that has nothing to do with neural networks. Tensorflow makes neural nets so easy that you barely even notice that they're part of the picture and its definitely not worth getting bogged down by their math if you dont have a solid understanding of the math behind cross entropy, policy gradients and the like. They probably even distract from where the true difficulty is. Maybe I'll try to get a regression to play pong so that everyone shuts about neural networks and starts talking about policy learning...
 
-##Neural Networks [(notebook)][6]
+### Neural Networks [(notebook)][6]
 
 So we finanlly get to it. Here's the same thing with a neural network. Its the simplest kind of net that there is but it is still very powerful. Way more powerful that our puny regression ever was becuase it has nonlinearities (RELU layers) between the other layers (which are basically just regressions by themselves). A product of linear regressions is still obviously linear<sup>[1](#myfootnote1)</sup>, but if we put a nonlinearity between the layers, then our net can do much more. Thats what gets people excited about neural networks: becuase they can hold enourmous amounts of information when trained well. Fortunatly, we just learned a bunch of cool ways to train them in steps 1-5. Now putting in the network is very easy. I really changed nothing except the Variable and the equation really is basically still *y = Wx + b* except non-linear *W*. 
 
@@ -128,7 +128,7 @@ The reason I introduced the networks so late is becuase they can be a bit diffic
  
 In steps 3-5, we spent a lot of time figuring out tricks to do with the training step, which is a widely researched area at the moment and is probably more relevant to algorithmic trading that anything else. Now we are starting to demonstrate some of the techniques used in the prediction engine (regression before, neural network now). I believe this is a much more researched area and TensorFlow is better equiped for it. Many people describe the types of neural networks that we will learn as cells or *legos*. You dont need to think that much about how it works as long as you know what it does. If you noticed, thats what I did with the neural network. There is a lot more to learn and its worth learning, but when you're actually building with it, you dont think about RELU layers as much as input/output and a black box in the middle. Or at least *I* do...there are a bunch of people in image processing who look inside networks and do [very cool things](https://github.com/google/deepdream). 
 
-##Regularization and Modularization [(notebook)][7]
+### Regularization and Modularization [(notebook)][7]
 
 From [Wikipedia][wiki_reg], "regularization is the introduction of additional information in order to solve an ill-posed problem or to prevent overfitting." For our purposes, it is any technique used to reduce overfitting. One of the simplest yet most important examples is [early stopping][early_stopping], that is, ending gradient descent before there is no significant gain in evaluation performance. The idea is that once the model stops improving, it will start to overfit the training data. Most overfitting can be avoided with just this technique. 
 
@@ -140,7 +140,7 @@ Another method is called [dropout regularization](http://arxiv.org/abs/1207.0580
 
 Since we want the same model with two different configurations--one with dropout active and one without--we will now pursue our long-overdue duty of refactoring our code. Although the code is presented in a single notebook, keep in mind that what I am essentially doing is modularizing. I won't claim that I am the most organized with my code, but I tried to keep it consistent with the best practices that I have observed others using with their open projects. Moving forward we will keep this structure becuase it is clearly superior to the organization that I had used before. 
 
-##LSTM [(notebook)][8]
+### LSTM [(notebook)][8]
 
 My favorite neural network, and a true stepping stone into real deep learning is the long short-term memory network, or LSTM. [Colah](http://colah.github.io/posts/2015-08-Understanding-LSTMs/) wrote an incredibly clear explanation of LSTM and there is really no substitute to reading his post. To describe the setup as briefly as possible, you input the data one timestep at a time to the LSTM cell. And each timestep the cell not only recieves the new input, but it recieves the last timestep's output and what is called the **cell state**, a vector that carries information about what happened in the past. Within the cell you have trained gates (basically small neural nets) that decide, based on the three inputs, what to forget from the past cell state, what to remember (or *add*) to the new state, and what to output this timestep. It is a very powerful tool and fascinating in how [effective it is](http://karpathy.github.io/2015/05/21/rnn-effectiveness/). 
 
