@@ -8,15 +8,15 @@ date:
 
 I present several models ranging in complexity from simple regression to LSTM and policy networks. The series can be used as an educational resource for tensorflow or deep learning, a reference aid, or a source of ideas on how to apply deep learning techniques to problems that are outside of the usual deep learning fields (vision, natural language).
 <!-- more -->
-!!! note
-    _**Edit (June 2024)**_ - This post is from 2016! I've revamped this blog, but kept a few posts from that era, which was a period of intense technical learning and exploration that I look back on fondly.
+!!! danger "Edit (June 2024)"
+    This post is from 2016! I've revamped this blog, but kept a few posts from that era, which was a period of intense technical learning and exploration that I look back on fondly.
 
 Not all of the examples will work. Some of them are far to simple to even be considered viable trading strategies and are only presented for educational purposes. Others, in the notebook form I present, have not been trained for the proper amount of time. Perhaps with a bit of rented GPU time they will be more promising and I leave that as an excercise for the reader. Hopefully this project inspires some to try using deep learning techniques for some more interesting problems. [Contact me](mailto:ljrconnell@gmail.com) if interested in learning more or if you have suggestions for additions or improvements. 
 
 The algorithms increase in complexity and introduce new concepts as they progress:
 
 ### Simple Regression [(notebook)][1]
-Here we regress the prices from the last 100 days to the next day's price, training *W* and *b* in the equation *y = Wx + b* where *y* is the next day's price, *x* is a vector of dimension 100, *W* is a 100x1 matrix and *b* is a 1x1 matrix. We run the gradient descent algorithm to minimize the mean squared error of the predicted price and the actual next day price. Congratulations, you passed highschool stats. But hopefully this simple and naive example helps demonstrate the idea of a tensor graph, as well as showing a great example of extreme overfitting. 
+Here we regress the prices from the last 100 days to the next day's price, training *W* and *b* in the equation `y = Wx + b` where *y* is the next day's price, *x* is a vector of dimension 100, *W* is a 100x1 matrix and *b* is a 1x1 matrix. We run the gradient descent algorithm to minimize the mean squared error of the predicted price and the actual next day price. Congratulations, you passed highschool stats. But hopefully this simple and naive example helps demonstrate the idea of a tensor graph, as well as showing a great example of extreme overfitting. 
 
 ### Simple Regression on Multiple Symbols [(notebook)][2] 
 Things get a little more interesting as soon as we introduce more than one symbol. What is the best way to model our eventual investment strategy? We start to realize that our model only vaguely implies a policy (investment actions) by predicting the actual movement in price. The implied policy is simple: buy if the the predicted price movement is positive, sell if it is negative. But that doesnt sound realistic at all. How much do we buy? And will optimizing this, even if we are very careful to avoid overfitting, even produce results that allign with our goals? We havent actaully defined our goals explicitly, but for those who are not familiar with investment metrics, common goals include:
@@ -37,7 +37,7 @@ For each symbol in our portfolio, we **sample** the probability distribution of 
 
 This part of the code was a bit tricky for several reasons. First off, we have a loop through and isolate each symbol since I need one position per symbol. I also am using multinomial probability distributions, so I need to take a softmax of those values. Softmax pushes values so that they sum to 1, and therefore can represent a probability distribution. In pseudocode: `softmax[i, j] = exp(logits[i, j]) / sum(exp(logits[i]))`. 
 
-```
+```python
 for i in range(len(symbol_list)):
     symbol_probs = y[:,i*num_positions:(i+1)*num_positions]
     symbol_probs_softmax = tf.nn.softmax(symbol_probs)
@@ -45,7 +45,7 @@ for i in range(len(symbol_list)):
 
 Next, we sample that probability distribution. Even though the code is a nice one-liner due to tensorflow's multinomial function, the function is NOT DIFFERENTIABLE, meaning that we will not be able to "move through" this step durring back propogation. We calcultate the position vector simply by subtracting 1 from the column indices that we got from the sample so that we get and element of {-1,0,1}.
 
-```
+```python
 pos = {}
 for i in range(len(symbol_list)):
     # ISOLATE from before
@@ -56,7 +56,7 @@ for i in range(len(symbol_list)):
 
 Then we multiply that position by the target (future return) for each day. This gives us our return. It already looks like a cost function but remember that it's not differentiable. 
 
-```
+```python
 symbol_returns = {}
 for i in range(len(symbol_list)):
     # ISOLATE and SAMPLE from before
@@ -66,7 +66,7 @@ for i in range(len(symbol_list)):
 
 Finally, we isolate the relevant column (the one we chose in our sample) from our probability distribution. The idea isn't very difficult but the code was a bit tough, remember that we are dealing with a whole batch of outputs at a time. This step NEEDS to be differentiable since we will use this tensor to compute our gradients. Unfortunately tensorflow is still developing a function that does it by itself, [here](https://github.com/tensorflow/tensorflow/issues/206) is the discussion. I actually think that my solution is the best and I suggest it in the discussion, but I'm really not an expert at efficient computation. If anyone thinks of a more efficient solution or if tensorflow finishes theirs please let me know. 
 
-```
+```python
 relevant_target_column = {}
 for i in range(len(symbol_list)):
     # ...
@@ -77,7 +77,7 @@ for i in range(len(symbol_list)):
 
 So here is all of that together:
 
-```
+```python
 # loop through symbols, taking the buckets for one symbol at a time
 pos = {}
 symbol_returns = {}
@@ -97,14 +97,14 @@ for i in range(len(symbol_list)):
 ```
  
 So now we have a tensor with the regression's probability for the chosen (sampled) action for each symbol and each day. We also have a few performance metrics like daily and total return to choose from, but they're not differentiable because we sampled the probability so we cant just "gradient descent maximize" the profit...unfortunately. Instead, we find the sigmoid cross entropy (a sort of distance function) between the first table (the probabilities we chose/sampled) and an all-ones tensor of the same shape. We get a table of cross entropies of the same size (number of symbols by batch size) This is basically equivalent to saying, how do I do MORE of what I'm already doing, for every decision that I made. 
-```
+```python
 training_target_cols = tf.concat(1, [tf.reshape(t, [-1,1]) for t in relevant_target_column.values()])
 ones = tf.ones_like(training_target_cols)
 gradient = tf.nn.sigmoid_cross_entropy_with_logits(training_target_cols, ones)
 ```
 
 Now we dont necessarilly want MORE of what we're doing, but the opposite of it is definitely LESS of it, which is useful. We multiply that tensor by our fitness function (the daily or aggregate return) and we use the gradient descent optimizer to minimize the cost. So you see? If the fitness function is negative, it will train the weights of the regression to NOT do what it just did. Its a pretty cool idea and it can be applied to a lot of problems that are much more interesting. I give some examples in the notebook about which different fitness functions you can apply which I think is better explained by seeing it. Here is that code:
-```
+```python
 cost = tf.mul(gradient , returns)        #returns are some reshaped version of symbol_returns (from above)
 optimizer = tf.train.GradientDescentOptimizer(0.1).minimize(cost)
 ```

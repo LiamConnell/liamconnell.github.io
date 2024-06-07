@@ -9,8 +9,8 @@ There is a lot written online about deep learning and AI. Ignoring the fluff and
 
 <!-- more -->
 
-!!! note
-    _**Edit (June 2024)**_ - This post is from 2016! I've revamped this blog, but kept a few posts from that era, which was a period of intense technical learning and exploration that I look back on fondly.
+!!! danger "Edit (June 2024)"
+    This post is from 2016! I've revamped this blog, but kept a few posts from that era, which was a period of intense technical learning and exploration that I look back on fondly.
 
 Education sharing in specialist fields is really cool and we should consider ourselves lucky to have it. My career so far has been based on the fact that anyone with math literacy can self-educate their way through tech.
 

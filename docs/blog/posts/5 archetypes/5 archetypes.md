@@ -3,11 +3,15 @@ date:
   created: 2024-06-04
 ---
 # 5 Archetypes of Knowledge-Intensive Applications
-## It's not always RAG
-In the last year, I've advised several innovative companies on their GenAI strategy and implemented applications of this technology across industries. A subset of GenAI use cases deal with knowledge bases and other large bodies of content. I call these knowledge-intensive applications, with a nod to the legendary book by Martin Kleppmann.
+### It doesn't always have to be RAG
+
+The advent of GenAI has seen the rise of the RAG Architecture
+
+In the last year, I've advised several innovative companies on their GenAI strategy, and I've implemented applications of this technology for use cases across industries. A subset of GenAI use cases deal with knowledge bases and other large bodies of content. I call these **knowledge-intensive applications**, with a nod to the [legendary book](https://www.amazon.com/Designing-Data-Intensive-Applications-Reliable-Maintainable/dp/1449373321) by Martin Kleppmann.
+
 <!-- more -->
 
-This article aims to provide a set of alternatives to an application pattern that product and technology leaders might reach to too often. I'm referring, of course, to the RAG Chatbot. The revolutionary ChatGPT interface has conditioned us into fixating on a single application type: the chatbot, often enhanced with retrieval-augmented generation (RAG). In this article, I'll describe when a RAG chatbot is useful and lay out four other application archetypes that are often more appropriate for a given use case.
+I want to provide a set of alternatives to an application pattern that product and technology leaders might reach to too often. I'm referring, of course, to the RAG Chatbot. The revolutionary ChatGPT interface has conditioned us into fixating on a single application type: the chatbot, often enhanced with retrieval-augmented generation (RAG). In this article, I'll describe when a RAG chatbot is useful and lay out four other application archetypes that are often more appropriate for a given use case.
 
 ## Archetype 1: The RAG Chatbot
 
@@ -15,7 +19,7 @@ The idea, familiar to many practitioners, is to answer user questions by using r
 
 The distinguishing feature is using a language model at the end of a set of operations (e.g., filtering, retrieval, summarization) to provide a user response in natural language.
 
-![img.png](img.png)
+![img_9.png](img_9.png)
 
 ### When is it useful?
 
@@ -27,7 +31,7 @@ For many use cases, unstructured content is more useful when it's structured. If
 
 The distinguishing feature here is applying an LLM for element-wise structural generation over a corpus of documents. This operation can incur a significant upfront cost but eliminates the need for LLM calls during user analysis of the resulting structured data.
 
-![img_1.png](img_1.png)
+![img_11.png](img_11.png)
 
 ### When is it useful?
 
@@ -39,9 +43,9 @@ The same goes for generated datasets used by other software systems. An example 
 
 Sometimes, the owner of a data system might want to provide a natural language interface for querying, analyzing, and visualizing the data. In this case, the user asks a question, the LLM generates a query in the query language of the data system, and the data is either provided back to the user or visualized in a chart.
 
-![img_2.png](img_2.png)
+![img_12.png](img_12.png)
 
-### When is this useful? 
+### When is it useful? 
 
 Many data systems, like the Bloomberg terminal, have many casual users who use only basic functionality and a few power users who can perform complex queries and generate high-quality charts. A natural language interface lets casual users get more value from the product without extensive training.
 
@@ -49,9 +53,9 @@ Many data systems, like the Bloomberg terminal, have many casual users who use o
 
 By combining archetypes 2 and 3, we can achieve natural language intelligence on a large set of documents. The documents are first processed for structure (archetype 2) and stored in an appropriate database. Then a query engine generates and runs queries and visualizations based on user input.
 
-![img_3.png](img_3.png)
+![img_13.png](img_13.png)
 
-### When is this useful? 
+### When is it useful? 
 
 If the structured generation stores data in a database that the target user is not comfortable querying, it would be beneficial to provide a query engine. This could be a simple CSV or tables in an SQL database.
 
@@ -63,9 +67,9 @@ The output of some very high-value business processes is a set of documents, hun
 
 The architecture will include a generated knowledge base of facts, a (possibly configurable) template for the document structure, and a set of writer/editor agents that work alongside authors to write and refine the document. 
 
-![img_4.png](img_4.png)
+![img_14.png](img_14.png)
 
-### When is this useful? 
+### When is it useful? 
 
 The top minds in many industries, such as pharmaceutical research, spend months producing formal documents for regulatory approval. Revisions to one part of the document might require combing through hundreds of pages to ensure consistency. Proper tooling here could cut the time to a first draft dramatically and improve interfaces for collaboration and iteration between authors and regulators.
 
