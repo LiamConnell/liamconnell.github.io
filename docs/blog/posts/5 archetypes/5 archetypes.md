@@ -7,9 +7,9 @@ date:
 
 The current GenAI boom has seen the rise of the Retrieval Augmented Generation (RAG) architecture, which promises to enhance the functionality of chatbots by providing them with context from a knowledge base. In some circles, RAG has become synonymous with LLM-based applications. 
 
-I think this is a mistake, and I've believe that many of the most valueable use cases that leverage LLM technology will do so without anything that resembles RAG. 
+I think this is a mistake, and I believe that many of the most valuable use cases that leverage LLM technology will do so without anything that resembles RAG. 
 
-    <!-- more -->
+<!-- more -->
 
 In the last year, I've advised several innovative companies on their GenAI strategy, and I've implemented applications of this technology for use cases across industries. A subset of GenAI use cases deal with knowledge bases and other large bodies of content. With a nod to the [legendary book](https://www.amazon.com/Designing-Data-Intensive-Applications-Reliable-Maintainable/dp/1449373321) by Martin Kleppmann, I call these **knowledge-intensive applications**. 
 
