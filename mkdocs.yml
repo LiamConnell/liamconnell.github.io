@@ -1,4 +1,4 @@
-site_name: ""
+site_name: "Liam Connell's Blog"
 site_description: I write about ML and software engineering
 site_url: https://liamconnell.github.io
 
@@ -8,7 +8,6 @@ theme:
   font:
     text: Ubuntu
     code: Ubuntu Sans Mono
-  logo: ./assets/logo.png
   favicon: ./assets/LC2.png
   features:
     - content.action.edit
