@@ -8,7 +8,7 @@ theme:
   font:
     text: Ubuntu
     code: Ubuntu Sans Mono
-  logo: ./assets/LiamConnell - Logo.png
+  logo: ./assets/logo.png
   favicon: ./assets/LC2.png
   features:
     - content.action.edit
