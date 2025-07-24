@@ -144,4 +144,5 @@ markdown_extensions:
 nav:
   - About Me: index.md
   - Blog: blog/index.md
-  - Services: services/index.md
+  #- Services: services/index.md
+  - Projects: projects.md
