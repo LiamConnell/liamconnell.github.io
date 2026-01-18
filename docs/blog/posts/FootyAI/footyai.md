@@ -4,7 +4,7 @@ date:
 ---
 # Tiki-Taka Reinforcement Learning
 
-<video controls src="game_update_04999.mp4" title="Title"></video>
+<video controls src="/assets/videos/game_update_04999.mp4" title="Title"></video>
 
 I asked my colleagues if anyone else misses the days of pre-foundation model AI. That simpler time between 2015 and 2022 when the field of artificial intelligence was showing enough early commercial promise to keep us gainfully employed, but was so layered with math and statistics that it kept out the vast majority of software engineers. It felt like a secret society for those who had happened to pay attention in undergraduate linear algebra and probability classes.
 
