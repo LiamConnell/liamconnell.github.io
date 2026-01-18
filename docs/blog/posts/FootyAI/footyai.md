@@ -19,7 +19,9 @@ It doesn't feel like that anymore. AI model releases are rightfully celebrated a
 But scratch a little deeper and the more lucid among us admit to worrying. We philistine engineers worry about job security, but artists have been living with that for too long to notice. Instead, the deeper worry is that we ourselves fade out of the picture. Do our prompts really make a difference, if we're honest with ourselves, or have our AI servants secretly taken the wheel?
 
 bicycle for the mind - self-driving?
-Tiki-Taka
+
+## Tiki-Taka
+
 Sergio Busquets, the legendary midfielder who played alongside Lionel Messi in Barcelona and Miami announced his retirement at the end of 2025. At Barcalona, Busquets was a master of their famous "tiki-taka" style playing. He would be at the center of tight formations making rapid passes between defensive lines, with the ball rebounding ("tiki-taka") from player to player. This style required tight coordination between players, with each player knowing exactly where the other would be and how to weave in between lines of defenders.
 
 The vision popped into my head when I watched a clip of his. Could I train an AI model to play soccer and develop an emergent tiki-taka style of play? This would let me dive into that whimsical 2020-era branch of AI which I so missed: Reinforcement Learning (RL).
@@ -33,14 +35,16 @@ And so, with my nostalgic memories of 2020-era AI and 2010-era soccer, I set out
 Setting up the environment was a simple task for Claude, and with just a few prompts I had scaffolded the entire project in a simple first version. Claude knew the basic ML model architectures that I specified from memory. I patted myself on the back for thinking of effective testing strategies to ensure the code was what I expected, and Claude dutifully followed my direction.  Setting up the self-play mechanism was something that I took special care to articulate clearly, but I still didn't give the code more than a cursory glance.
 
 Cautiously, I had set up a first version in under an hour. I still hadn't launched a training run yet, but the project was going well. Perhaps too well - I was self-aware and proud enough to be a bit worried that the project would simply be too easy for my AI assistant. The project would conclude itself without leaving any space for me to leave my mark. When you're playing with Messi on your team, you sometimes wonder if your contribution makes a difference at all.
-The Experiment Machine
+
+## The Experiment Machine
+
 Machine learning projects are fundamentally different than building an app. You don't know what is going to work until you try it. And in the case of reinforcement learning, most of what you try will almost certainly not work. There is a cute parallel between the gradient-driven learning process of the model and the intuition-driven learning process of the researcher as he or she tweaks hyper-parameters and model architecture.
 
 My goal was to finish the project in a week, and I recognized that success would hinge on how quickly I could iterate on experiments. To optimize this, I had three levers:
 
-Run many experiments in parallel
-Increase the training speed
-Increase my capacity for designing and interpreting large numbers of experiments
+1. Run many experiments in parallel
+2. Increase the training speed
+3. Increase my capacity for designing and interpreting large numbers of experiments
 
 Running experiments in parallel is largely a solved problem thanks to cloud-based ML platforms, where I can easily deploy to serverless runtime environments with GPU hardware. With a click of my fingers Claude spit out a deployment script as elegant and ergonomic as I'd ever seen. [make less tech-y]
 
@@ -62,8 +66,10 @@ Once again, my AI assistant proved a valuable companion. I could list out a set 
 
 I stopped short of asking the agent to interpret the videos themselves - something I could have done with a call to the multi-multimodal Gemini API. This was partially because I wanted to be the ultimate judge of "tiki-taki-ness" in the soccer play style, but also because I needed to maintain a perspective on quality as the "lead researcher" of the project.
 
-Within a day, we were a well-oiled machine, firing off batches of experiments and crossing off dead-end ideas at a blistering pace. As I progressed, I tweaked and loosely codified the workflow in Claude's configuration file.
-Research Taste
+Within a day, we were a well-oiled machine, firing off batches of experiments and crossing off dead-end ideas at a blistering pace. As I progressed, I tweaked and loosely codified the workflow in Claude's configuration file. 
+
+## Research Taste
+
 The models were still not converging on anything resembling intelligent and coordinated gameplay. Perhaps they would have individual moments of genius, but they often tended to drift into corners and get stuck. [metaphore] I had tweaked endless configurations of reward functions and exploratory incentives, but the results were only marginally better.
 
 Eventually I gave in, and sheepishly asked Claude for ideas. It came up with several and dutifully ran the experiments. Some of the ideas were things that I wouldn't have thought of, but most of them were relatively uninspired, fixated on incremental tweaks to ideas we had already tried. Judging by the clumsy state of gameplay (woefully far from my initial tiki-taka ambition) I knew we needed a major change.
@@ -73,7 +79,9 @@ I made three breakthroughs in the latter half of the week. Each one resulted in 
 I am therefore extremely pleased to report that I did leave my own mark on the project after all. Let it be known that in early 2026, humanity still had an edge in the sacred skill of "research taste." What is research taste? It's how we come up with the answer to the vital question: "what should I try now?" When we human's win at this, the answer bubbles up to our consciousness from the depths below. We sit bolt upright, listen to the mystic voice and urgently let it become manifest through our fingertips.
 
 [elaborate more]
-Finishing touches
+
+## Finishing touches
+
 The last eureka moment was based on game initialization. I realized that if I initialized the game state completely randomly, I would effectively force the training process to explore every possible scenario, which would stop the agents from getting "lost" in corners by the end of the game. The improvement in gameplay quality was astounding - players moved confidently, passing the ball and bouncing the ball around opponents and into the goal. There were a few minor issues to work through - players tended to bunch around the ball like a kindergarten soccer game - but, as is so common in the final stretch of a project, those all fell into place with a few confidently fired experiments.
 
 In spite of my lofty rhetoric, I have no delusions of grandeur about the scale of my little breakthrough. I might be immune to "AI Psychosis" by the sheer level of anticipatory embarrassment I feel for that moment of disillusionment.
