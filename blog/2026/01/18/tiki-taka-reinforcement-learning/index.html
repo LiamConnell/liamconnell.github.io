@@ -1,0 +1,771 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="I write about ML and software engineering">
+      
+      
+      
+        <link rel="canonical" href="https://liamconnell.github.io/blog/2026/01/18/tiki-taka-reinforcement-learning/">
+      
+      
+        <link rel="prev" href="../../../../2024/06/12/5-archetypes-of-knowledge-intensive-applications/">
+      
+      
+        <link rel="next" href="../../23/what-does-it-feel-like-to-be-an-agent/">
+      
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../../../../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../../../../feed_rss_updated.xml">
+      
+      <link rel="icon" href="../../../../../assets/LC2.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+    
+    
+      
+        <title>Tiki-Taka Reinforcement Learning - Liam Connell's Blog</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,700,700i%7CUbuntu+Sans+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Ubuntu";--md-code-font:"Ubuntu Sans Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-J3S293V7H7"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-J3S293V7H7",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-J3S293V7H7",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="light-var" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#tiki-taka-reinforcement-learning" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      <!--
+  Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
+-->
+
+<!-- Determine classes -->
+
+
+  
+
+
+<!-- Header -->
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav
+    class="md-header__inner md-grid"
+    aria-label="Header"
+  >
+
+
+    <!-- Button to open drawer -->
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+
+    <!-- Header title -->
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Liam Connell's Blog
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Tiki-Taka Reinforcement Learning
+            
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Color palette toggle -->
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="light-var" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5 5 5 0 0 1 5-5 5 5 0 0 1 5 5 5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 9a3 3 0 0 1 3 3 3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3m0-4.5c5 0 9.27 3.11 11 7.5-1.73 4.39-6 7.5-11 7.5S2.73 16.39 1 12c1.73-4.39 6-7.5 11-7.5M3.18 12a9.821 9.821 0 0 0 17.64 0 9.821 9.821 0 0 0-17.64 0"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+
+    <!-- User preference: color palette -->
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+
+    <!-- Site language selector -->
+    
+
+    <!-- Button to open search modal -->
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+
+      <!-- Search interface -->
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    <!-- Repository information -->
+    
+  </nav>
+
+  <!-- Navigation tabs (sticky) -->
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  About Me
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="../../../../" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Blog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../projects/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Projects
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="Liam Connell&#39;s Blog" class="md-nav__button md-logo" aria-label="Liam Connell's Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Liam Connell's Blog
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    About Me
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      <a href="../../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Blog
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../projects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Projects
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tiki-taka" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tiki-Taka
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-experiment-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      The Experiment Machine
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#research-taste" class="md-nav__link">
+    <span class="md-ellipsis">
+      Research Taste
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finishing-touches" class="md-nav__link">
+    <span class="md-ellipsis">
+      Finishing touches
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+  <div class="md-content md-content--post" data-md-component="content">
+    <div class="md-sidebar md-sidebar--post" data-md-component="sidebar" data-md-type="navigation">
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner md-post">
+          <nav class="md-nav md-nav--primary">
+            <div class="md-post__back">
+              <div class="md-nav__title md-nav__container">
+                <a href="../../../../" class="md-nav__link">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+                  <span class="md-ellipsis">
+                    Back to index
+                  </span>
+                </a>
+              </div>
+            </div>
+            
+            <ul class="md-post__meta md-nav__list">
+              <li class="md-nav__item md-nav__item--section">
+                <div class="md-post__title">
+                  <span class="md-ellipsis">
+                    Metadata
+                  </span>
+                </div>
+                <nav class="md-nav">
+                  <ul class="md-nav__list">
+                    <li class="md-nav__item">
+                      <div class="md-nav__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
+                        <time datetime="2026-01-18 00:00:00+00:00" class="md-ellipsis">January 18, 2026</time>
+                      </div>
+                    </li>
+                    
+                    
+                    
+                      
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
+                          <span class="md-ellipsis">
+                            
+                              11 min read
+                            
+                          </span>
+                        </div>
+                      </li>
+                    
+                  </ul>
+                </nav>
+              </li>
+            </ul>
+            
+          </nav>
+          
+        </div>
+      </div>
+    </div>
+    <article class="md-content__inner md-typeset">
+      
+        
+  
+
+
+
+
+<h1 id="tiki-taka-reinforcement-learning">Tiki-Taka Reinforcement Learning<a class="headerlink" href="#tiki-taka-reinforcement-learning" title="Permanent link">&para;</a></h1>
+<video controls src="/assets/videos/game_update_04999.mp4" title="Title"></video>
+
+<p>I asked my colleagues if anyone else misses the days before foundation model AI. That simpler time between 2015 and 2022 when the field of artificial intelligence was showing enough early commercial promise to keep us gainfully employed, but was so layered with math and statistics that it kept out the vast majority of software engineers. It felt like a secret society for those who had happened to pay attention in undergraduate linear algebra and probability classes.</p>
+<!-- more -->
+
+<p>Things moved fast, but still at human scale. Each year a new set of model architectures would emerge and be applied to a broadening set of domains. Keeping up with it all was a challenge, but it was feasible. Some researchers and practitioners put early AI systems to work, combing through new publications and identifying only the important papers to stay on top of - a sign of what was to come.</p>
+<p>The practice of working on AI felt different then. Model architectures felt like legos, and we became masters at connecting these blocks to solve specialized problems. In the age of foundation models, the practice of AI research now feels less like building lego castles and more like real software engineering. We integrate with massive software systems, control huge clusters of GPUs and optimize the fractional milliseconds of data transfer time between devices.</p>
+<p>But I think the most striking difference is how it feels when new state of the art capabilities are released. Back then, new models and capabilities were impressive in a charming way. OpenAI was working on reinforcement learning (RL) for simulated physical environments at the time, and it released a "Gym" of environments that featured animal-shaped figures that an AI training process would teach to walk and run. We saw, in the limping and stumbling creatures, AI progress amble towards a harmless C3PO-like future.</p>
+<p>It doesn't feel like that anymore. On one hand, AI model releases are rightfully celebrated and intellectually stimulating to see. Most of all, the new tools give us an intoxicating feeling of having a super power. Its not just software engineers either. I've spoken with theater set designers, architects, poets - they all have described the moment when they uttered a command into the strange textbox and saw their vision realized in seconds.</p>
+<p>But scratch a little deeper and the more lucid among us admit to worrying. We philistine engineers worry about job security, but artists have been living with job insecurity for too long to notice. Instead, the deeper worry is that we ourselves fade out of the picture. Do our prompts really make a difference, if we're honest with ourselves, or have our AI servants secretly taken the wheel? Steve Job likened computers to bicycles for the mind, but what happens when it's a self-driving car? </p>
+<h2 id="tiki-taka">Tiki-Taka<a class="headerlink" href="#tiki-taka" title="Permanent link">&para;</a></h2>
+<p>Sergio Busquets, the legendary midfielder who played alongside Lionel Messi for Barcelona and Miami announced his retirement at the end of 2025. At Barcalona, Busquets was a master of their famous "tiki-taka" style playing. He would be at the center of tight formations making rapid passes between defensive lines, with the ball rebounding ("tiki-taka") from player to player. This style required tight coordination between players, with each player knowing exactly where the other would be and how to weave in between lines of defenders.</p>
+<p>A vision popped into my head when I watched a clip of his. Could I train an AI model to play soccer and develop an emergent tiki-taka style of play? It seemed like an approachable technical challenge, and it would let me dive into that whimsical 2020-era branch of AI which I missed the most: Reinforcement Learning (RL).</p>
+<p>Like I mentioned, RL was one of OpenAI's initial focus. RL has come back into the picture in the era of large language models like Gemini and ChatGPT. But back then, it meant video games and simulated physical environments with simple multi-jointed creatures ("agents") - not the legions of data-labelers teaching language models chatbot etiquette as it's used today. </p>
+<p>Something I hadn't seen at the time (and which I avoided looking up in order to preserve my innocent curiosity) was learned cooperation between RL agents. Whereas self-play RL typically sets up agents in competition, team sports would theoretically favor agents that could anticipate the actions of a teammate as well as an opponent. Seemed interesting enough to explore.</p>
+<p>And so, with my nostalgic memories of 2020-era AI and 2010-era soccer, I set out to take it on as a small personal research project. Armed with my AI coding assistant, Claude, I budgeted a week of time squeezed in between work and family duties.</p>
+<p>Setting up the environment was a simple task for Claude, and with just a few prompts I had scaffolded the entire project. Claude knew the basic ML model architectures that I specified, and it recited them from memory. I patted myself on the back for thinking of effective testing strategies to ensure the code was what I expected, and Claude dutifully followed my direction.  Setting up the self-play mechanism was something that I took special care to articulate clearly, but I still didn't give the code more than a cursory glance.</p>
+<p>Cautiously, I had set up a first version of the project in under an hour. I still hadn't launched a training run yet, but the project was going well. Perhaps too well - I was self-aware and proud enough to be a bit worried that the project would simply be too easy for my AI assistant. The project would conclude itself without leaving any space for me to leave my mark. When you're playing with Messi on your team, you sometimes wonder if your contribution makes a difference at all.</p>
+<h2 id="the-experiment-machine">The Experiment Machine<a class="headerlink" href="#the-experiment-machine" title="Permanent link">&para;</a></h2>
+<p>Machine learning projects are fundamentally different than building an app. You don't know what is going to work until you try it. And in the case of reinforcement learning, most of what you try will almost certainly not work. There is a cute parallel between the gradient-driven learning process of the model and the intuition-driven learning process of the researcher as he or she tweaks hyper-parameters and model architecture.</p>
+<p>My goal was to finish the project in a week, and I recognized that success would hinge on how quickly I could iterate on experiments. To optimize this, I had three levers:</p>
+<ol>
+<li>Run many experiments in parallel</li>
+<li>Increase the training speed</li>
+<li>Increase my capacity for designing and interpreting large numbers of experiments</li>
+</ol>
+<p>Running experiments in parallel is largely a solved problem thanks to cloud-based ML platforms, where I can easily deploy training jobs to GPU hardware. With a click of my fingers Claude spat out a deployment script as elegant and ergonomic as I'd ever seen.</p>
+<p>The second issue was a bit more difficult. GPU and TPU hardware allows massive parallelism and speed for most machine learning tasks, but training in RL poses an interesting challenge: every time step requires a simulated environment to process the actions from the agent models and produce a set of observations to be passed back to the models.</p>
+<p>Initially, I had implemented the physics, game rules and reward calculation in python code running on the CPU. However, CPUs are slow at simulating several environments simultaneously. Even worse was the very fact that data was being sent back and forth between the two devices - a cardinal sin in the church of "making things fast." The precious GPU device used for training the model "brain" would be sitting idle most of the time, waiting for the game board to tell it how the game had progressed. Sure enough when I tested this, even deployed to a GPU-accelerated runtime, it could only process 64 games every 5 seconds, or about 13 games per second.</p>
+<p>I looked up the old OpenAI Gymnasium cartpole and MuJoCo environments that I had toyed around with years ago, and sure enough it also ran the simulations on a CPU. Trying to put myself in a 2018 mindset, I'm not sure if this was an oversight or based on hardware limits of the time. It very well could have been the case that the researchers, so accustomed to representing clean matrix multiplication in their GPU-optimized code, didn't want to deal with the complexity of representing complex simulation logic.</p>
+<p>And neither did I. The endeavor - which very well could have turned me into some sort of Rain Man by the end of it - involves thinking of all the physics, game rules and reward signals as operations on multi-dimensional arrays. Fortunately, I had my own private Rain Man at my fingertips, and Claude wrote perfectly optimized GPU code that twisted and turned matrices like some origami master from outer space.</p>
+<p>Now the entire "loop" of the agent and environment - and therefore the training loop as a whole - was contained within JAX's Just-in-time compiler ("JIT"). Training now happened at blistering speed: I could run 8192 games in parallel, 6 times every second. I was running over 4000 times more simulates than before.</p>
+<p>As I watched the training logs wiz by, I was struck by what was actually happening. On a piece of silicon a little bigger than a quarter, 50,000 soccer games were being played each second - totally 18 days of gameplay per second. An ant-sized brain was also in the environment, learning a tiny bit from each game. This entire universe was completely isolated from the rest of the world and running entirely off the physics and game rules that were expressed in mathematical operations. </p>
+<p>Now that a training run ran in a matter of minutes, the third lever to optimize became critical: I had to increase my capacity for designing and interpreting large numbers of experiments. The training was not converging to intelligent play styles, I had dozens of ideas for how to improve it, and I had to start figuring out what would help.</p>
+<p>Once again, my AI assistant proved a valuable companion. I could list out a set of hyper-parameter of degrees of freedom, ask it to kick off 20 experiments to maximize entropy (i.e., "learn as much information as possible"). It wrote experiment logs to markdown files. Whenever training completed for a batch of experiments, I asked it to fetch the logged metrics, interpret them and write out findings in the impeccably formatted experiment logs.</p>
+<p>I stopped short of asking the agent to interpret the videos themselves - something I could have done with a call to the multi-multimodal Gemini API. This was partially because I wanted to be the ultimate judge of "tiki-taki-ness" in the soccer play style, but also because I needed to maintain a perspective on quality as the "lead researcher" of the project.</p>
+<p>Within a day, we were a well-oiled machine, firing off batches of experiments and crossing off dead-end ideas at a blistering pace. As I progressed, I tweaked and loosely codified the workflow in Claude's configuration file. </p>
+<h2 id="research-taste">Research Taste<a class="headerlink" href="#research-taste" title="Permanent link">&para;</a></h2>
+<p>The models were still not converging on anything resembling intelligent and coordinated gameplay. Perhaps they would have individual moments of genius, but they often tended to drift into corners and wander listlessly, unaware of the game at hand. I had tweaked endless configurations of reward functions and exploratory incentives, but the results were only marginally improving.</p>
+<p>Eventually I gave in, and sheepishly asked Claude for ideas. It came up with several and dutifully ran the experiments. Most of the ideas were relatively uninspired, fixated on incremental tweaks to ideas we had already tried. Judging by the clumsy state of gameplay (woefully far from my initial tiki-taka ambition) I knew we needed a major change.</p>
+<p>I made three breakthroughs in the latter half of the week. Each one resulted in a step-change performance improvement. One of them was a bug that I suddenly realized must be in the training loop when studying a rendered game video. When I asked the AI agent to check, it was exactly where I expected. The other two were both intuitive leaps that came to me suddenly while I casually thought of the problem.</p>
+<p>I am therefore extremely pleased to report that I did leave my own mark on the project after all. Let it be known that in early 2026, humanity still had an edge in the sacred skill of "research taste." What is research taste? It's how we come up with the answer to the vital question: "what should I try now?" When we human's win at this, the answer bubbles up to our consciousness from the depths below. We sit bolt upright, listen to the mystic voice and urgently let it become manifest through our fingertips.</p>
+<!-- [elaborate more] -->
+
+<h2 id="finishing-touches">Finishing touches<a class="headerlink" href="#finishing-touches" title="Permanent link">&para;</a></h2>
+<p>The last eureka moment was based on game initialization. I realized that if I initialized the game state completely randomly, I would effectively force the training process to explore every possible scenario, which would stop the agents from getting "lost" in corners by the end of the game. The improvement in gameplay quality was astounding - players moved confidently, passing the ball and bouncing the ball around opponents and into the goal. There were a few minor issues to work through - players tended to bunch around the ball like a kindergarten soccer game - but, as is so common in the final stretch of a project, those all fell into place with a few confidently fired experiments.</p>
+<p>In spite of my lofty rhetoric, I have no delusions of grandeur about the scale of my little breakthrough. I might be immune to "AI Psychosis" by the sheer level of anticipatory embarrassment I feel for that moment of disillusionment.</p>
+<p>I purposely avoided looking up the state-of-the-art in multi-agent RL when I started the project in order to avoid spoiling the journey, but eventually I spent some time reading about it. Fully on-device RL environments have a exploded in popularity in the last 4 years, with NVIDIA and Google's JAX ecosystems leading the way. Multi-agent coordination is well-researched and has its own acronym, "MARL". I haven't looked up whether random initialization has been explicitly been studied, but I don't think it would warrant much more than a footnote.</p>
+<p>So despite creating the world's first tiki-taka style soccer playing AI agents, all of my research, ideation and experimentation will have added nothing to the field. What's more, the findings of the field were probably well known by Claude from the get-go, and the AI model might have subtly influenced the project to follow well-trodden paths. Part of the project was the desire to go back in time and practice AI research based on my knowledge, which was well-developed at the time. I avoided looking at the answer key myself, but that cant be said about my AI assistant.</p>
+<p>Researchers at the big AI labs have spoken out about the intense speed of research and ideas within their labs. NeurIPS submissions are up 70%, no doubt fueled by the sudden relative ease of churning out research papers. Of course some of this is slop, but it's conceivable that there are net more good ideas being fed into the pipe and therefore the pace of research has significantly accelerated. Whether or not that's true, we can see that we've opened pandora's box, and research will never take place at a human scale again.</p>
+<p>I wonder if that signals the beginning of the end for many human researchers. If that's the case, then maybe there will be a rise of this type of project I pursued this week. It feels a bit like the era of the "gentleman scientist", which was a term used to describe enlightenment-era scientists performing experiments before science became professionalized. (Unfortunately its also a noninclusive term that I honestly cant find an alternative for.) While the hoards of aspirational researchers flood AI conferences with their AI-generated research, I find it surprisingly pleasant to take an introspective and curiosity-driven approach... and then of course ask Claude to implement the whole thing for me.</p>
+<p><a class="md-button" href="https://twitter.com/intent/tweet?text=Tiki-Taka%20Reinforcement%20Learning%0A&amp;url=https://liamconnell.github.io/blog/2026/01/18/tiki-taka-reinforcement-learning/">Share on <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg></span></a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+
+
+  
+
+
+
+      
+    </article>
+  </div>
+
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+        
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../../../2024/06/12/5-archetypes-of-knowledge-intensive-applications/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 5 Archetypes of Knowledge-Intensive Applications">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                5 Archetypes of Knowledge-Intensive Applications
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../23/what-does-it-feel-like-to-be-an-agent/" class="md-footer__link md-footer__link--next" aria-label="Next: What does it feel like to be an agent?">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                What does it feel like to be an agent?
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://x.com/ljrconnell" target="_blank" rel="noopener" title="x.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8l164.9-188.5L26.8 48h145.6l100.5 132.9zm-24.8 373.8h39.1L151.1 88h-42z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/liamconnell" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/liam-connell-936874a2/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../../../..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.tabs.link", "header.autohide", "navigation.expand", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "../../../../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+    
+  </body>
+</html>
